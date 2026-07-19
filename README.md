@@ -15,6 +15,15 @@ One PC runs Proxmox, split into a handful of VMs that make up the "company":
 
 My MacBook plays the role of "the employees." It runs Windows VMs joined to the domain, so when something goes wrong, like a login failing or a machine losing network access, it's a real problem on a real machine, not something I'm just imagining.
 
+## Hardware
+Everything runs on a single dedicated box, not a laptop or cloud VM this time. I wanted the full experience of racking real (if used) enterprise gear and making it work.
+
+- **Host**: Dell OptiPlex 7050 SFF, i7-7700, 32GB DDR4 RAM, 500GB SSD + 500GB HDD
+- **Network**: TP-Link TL-SG116E, 16-port managed switch, handling VLAN tagging between pfSense and everything downstream
+- **NIC**: dual-port PCIe Gigabit card, giving pfSense a proper WAN/LAN split instead of relying on one interface
+
+The SSD holds the VMs, the HDD is backup and ISO storage. 32GB of RAM was the deciding factor when I was hunting for a host, more important than raw CPU speed for running four services at once without hitting a ceiling.
+
 ## Architecture
 
 <img width="642" height="328" alt="PC - Proxmox VE host" src="https://github.com/user-attachments/assets/88de4c35-e8d8-4955-9047-41c6de4bf15f" />
@@ -33,6 +42,7 @@ My MacBook plays the role of "the employees." It runs Windows VMs joined to the 
 
 ## Build phases
 
+- [x] Source and build the host (OptiPlex 7050, 32GB RAM, dual NIC, managed switch)
 - [ ] Proxmox install and host config
 - [ ] pfSense install, VLAN and DHCP design
 - [ ] AD DC build, OUs, test users, GPOs
