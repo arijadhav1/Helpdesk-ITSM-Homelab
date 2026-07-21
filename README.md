@@ -1,6 +1,6 @@
 # Helpdesk & ITSM Homelab
 
-I built a fake company's IT department from scratch, on my own hardware. Network, identity, ticketing, monitoring, all of it. The goal is to run it the way an actual helpdesk or NOC tech would: employees submit tickets, I troubleshoot and fix things, and I've got monitoring watching for problems before anyone even complains.
+I am building a fake company's IT department from scratch, on my own hardware. Network, identity, ticketing, monitoring, all of it. The goal is to run it the way an actual helpdesk or NOC tech would: employees submit tickets, I troubleshoot and fix things, and I've got monitoring watching for problems before anyone even complains.
 
 This is my third homelab. The first two ([AD detection & response](#) and [adversary simulation & endpoint telemetry](#)) were built around the SOC/blue team side of things. This one's different on purpose, it's built around the support side, since that's where I'm actually starting my career.
 
