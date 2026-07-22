@@ -72,4 +72,4 @@ Once everything's up, I'll be logging real tickets here, the problem, how I trac
 
 ## Status
 
-Just getting started. Working on the Proxmox install right now.
+Proxmox is installed and running. pfSense VM is built with WAN and LAN interfaces assigned and both networks live. Working on VLAN design and firewall rules next, then on to the AD DC, osTicket, and Zabbix VMs.
