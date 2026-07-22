@@ -4,6 +4,12 @@ I am building a fake company's IT department from scratch, on my own hardware. N
 
 This is my third homelab. The first two ([AD detection & response](#) and [adversary simulation & endpoint telemetry](#)) were built around the SOC/blue team side of things. This one's different on purpose, it's built around the support side, since that's where I'm actually starting my career.
 
+## Setup Write-ups
+Every phase of this build gets documented as I go, hardware, networking, VM setup, all of it. Full write-ups live in [`/setup`](./setup):
+
+- [Physical Network Setup](./setup/PHYSICAL-SETUP.md) — getting the OptiPlex online through my existing mesh, AT&T gateway troubleshooting
+- [Proxmox + pfSense Setup](./setup/PROXMOX-PFSENSE-SETUP.md) — installing Proxmox, building the pfSense VM, setting up the WAN/LAN split
+
 ## What's in it
 
 One PC runs Proxmox, split into a handful of VMs that make up the "company":
