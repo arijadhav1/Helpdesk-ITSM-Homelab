@@ -43,7 +43,7 @@ The SSD holds the VMs, the HDD is backup and ISO storage. 32GB of RAM was the de
 ## Build phases
 
 - [x] Source and build the host (OptiPlex 7050, 32GB RAM, dual NIC, managed switch)
-- [ ] Proxmox install and host config
+- [x] Proxmox install and host config
 - [ ] pfSense install, VLAN and DHCP design
 - [ ] AD DC build, OUs, test users, GPOs
 - [ ] osTicket install and department/category config
