@@ -1,4 +1,4 @@
-# Setup Write-ups
+# Setup Documentation
  
 Detailed write-ups for each phase of the build, in the order I actually did them. Screenshots, what went wrong, how I fixed it.
  
