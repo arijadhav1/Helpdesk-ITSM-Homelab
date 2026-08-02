@@ -72,4 +72,4 @@ Once everything's up, I'll be logging real tickets here, the problem, how I trac
 
 ## Status
 
-Proxmox is installed and running. pfSense VM is built with WAN and LAN interfaces assigned and both networks live. VLANs created and firewall rules next, then on to the AD DC, osTicket, and Zabbix VMs.
+Proxmox is installed and running. pfSense VM is built with WAN and LAN interfaces assigned and both networks live. VLANs created and firewall rules next, then on to the AD DC, osTicket, and Zabbix VMs. In progress.
