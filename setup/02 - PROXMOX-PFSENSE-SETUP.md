@@ -114,7 +114,6 @@ Went with the default ZFS file system and GPT partition scheme, stripe as the ZF
 
 <img width="722" height="425" alt="X Not Sacure - 1000 60" src="https://github.com/user-attachments/assets/fbf666da-cd60-455d-8530-323bfc4e07c6" />
 
-## Result
 
 Once it rebooted, pfSense came up clean:
 
@@ -126,4 +125,90 @@ LAN (lan) -> em1 -> v4: 10.10.10.1/24
 <img width="724" height="434" alt=" Not Socure -10 00 50" src="https://github.com/user-attachments/assets/ff292eb3-bff2-402f-a038-a2e53322de6a" />
 
 
-WAN pulled an address from my home network as expected, and LAN is live on `10.10.10.1`, the gateway for the lab network going forward. Proxmox is installed, reachable, and updating properly. pfSense is installed with both interfaces correctly assigned. This is the foundation everything else gets built on top of, next is VLAN design and the actual firewall rules, then the AD DC, osTicket, and Zabbix VMs.
+## Accessing the Web GUI
+
+The pfSense console only handles basic setup. Everything else happens in the web GUI, and the GUI is only reachable from the LAN side. I needed my Mac physically on `10.10.10.x` to get in.
+
+Used a USB-C to Ethernet adapter, ran a cable from an open port on the OptiPlex to my Mac. Nothing showed up at first. Tried a different cable, still nothing. Turned out the cable was in the wrong port on the OptiPlex side. Moved it, connected immediately.
+
+<img width="504" height="546" alt="USB 10100 1000LAN" src="https://github.com/user-attachments/assets/f081ed32-dcce-4bd5-b561-6a4d267604b5" />
+
+Went to `https://10.10.10.1` in the browser.
+
+<img width="749" height="701" alt="•••" src="https://github.com/user-attachments/assets/92603839-8e65-4d33-9299-a066791fe3dc" />
+
+
+Logged in with the default credentials, `admin` / `pfsense`, and changed the password right away since that default is public knowledge.
+
+Confirmed WAN and LAN were still showing the correct IPs.
+
+<img width="744" height="112" alt="Interfaces" src="https://github.com/user-attachments/assets/5cd7608a-72f2-46ac-b5f6-d3e6f9219577" />
+
+
+## Creating VLANs
+
+Right now I have one flat network on the LAN side. Everything I build going forward, AD, osTicket, Zabbix, client machines, would share that same space with nothing separating them. That defeats the point of having a firewall. Real IT environments keep servers and end user machines on separate segments so a problem on one side doesn't spread to the other. VLANs get me that same separation, even though everything rides on the same physical cable.
+
+Went to Interfaces, Assignments, VLANs. Added one: Parent Interface `em1` (the LAN), VLAN tag `10`, description `Servers`. Added a second: tag `20`, description `Clients`.
+
+<img width="742" height="463" alt="VLAN Configuration" src="https://github.com/user-attachments/assets/964e3c71-c558-4ff4-b5a8-bec8830cbbc5" />
+
+<img width="744" height="475" alt="VLAN Configuration" src="https://github.com/user-attachments/assets/ef0966a2-83e2-46f9-a87e-7fbfb7a14665" />
+
+<img width="753" height="448" alt="Interface Assignments Interface Groups Wireless VLANs QinQs PPPs GREs GIFS Bridges" src="https://github.com/user-attachments/assets/b4400bf6-2a5e-48f4-81fd-78719e430877" />
+
+
+At this point both were just tags. Nothing usable yet.
+
+## Assigning VLANs as Interfaces
+
+A tag alone doesn't do anything. To make it a real network, it has to become an actual interface, same as `em0` and `em1` already are.
+
+Went to Interfaces, Assignments, added both VLANs. pfSense created them as `OPT1` (Servers) and `OPT2` (Clients). Clicked into each, enabled it, renamed it, gave it a static IP.
+
+<img width="1255" height="696" alt="prisense" src="https://github.com/user-attachments/assets/125aa56f-b8c5-40aa-9f4b-b458f8aefc88" />
+
+
+First try, I gave Servers `10.10.10.1/24`, same range as the existing LAN. pfSense rejected it, address already in use. Two interfaces can't share a subnet. Went with `10.10.20.1/24` for Servers and `10.10.30.1/24` for Clients instead.
+
+So across these steps: tagged both VLANs, assigned each as an interface, gave each a static IP. The old LAN interface still sits at `10.10.10.1/24`, unused now, since nothing's meant to live there anymore.
+
+## Setting Up DHCP
+
+Static IPs get pfSense itself online, but anything that connects still needs an address handed out automatically. Without DHCP, every VM I build would need a manually typed IP just to reach the network.
+
+Services, DHCP Server, Servers tab, enabled it, set the range:
+
+- Servers: `10.10.20.100 - 10.10.20.199`
+- Clients: `10.10.30.100 - 10.10.30.199`
+<img width="1226" height="724" alt="16 10 20 100" src="https://github.com/user-attachments/assets/0cfcdeb2-85fd-461a-88b7-2ea858515a9c" />
+
+<img width="1236" height="723" alt="Screenshot 2026-08-03 at 10 29 57 AM" src="https://github.com/user-attachments/assets/5bc5ad5b-560f-40fb-a0b2-c495fcbf00af" />
+
+
+Left `.2` through `.99` open on both subnets. That's for devices I want fixed IPs later, like the AD DC, so DHCP never hands one of those out by accident. `.100` through `.199` is the dynamic pool for anything that just needs an address.
+
+## Firewall Rules
+
+New interfaces deny everything by default until a rule says otherwise. Set up two:
+
+1. **Servers outbound to internet.** Interface Servers, source Servers subnet, destination any. Needed so the AD DC, osTicket, and Zabbix can reach the internet for updates once they exist.
+2. **Clients outbound to internet.** Same setup, on the Clients interface.
+
+<img width="1205" height="166" alt="Feeing WAN IAN SURVER" src="https://github.com/user-attachments/assets/9ba2c2a1-6f17-44a7-9e7a-15636b609a8e" />
+
+<img width="1189" height="179" alt="Hoating" src="https://github.com/user-attachments/assets/6bd9bb00-3bb4-43c1-8649-cc94d3f70bc7" />
+
+
+Held off on a third rule, Clients to Servers. There's nothing on the Servers side yet, so there's nothing for a client to reach. I'd rather add that rule once the VMs exist and I know exactly what ports they actually need open.
+
+## Result
+
+```
+WAN     -> em0 -> v4/DHCP4: 10.0.0.11/24
+LAN     -> em1 -> v4: 10.10.10.1/24 (unused going forward)
+SERVERS -> VLAN 10 on em1 -> v4: 10.10.20.1/24, DHCP 10.10.20.100-199
+CLIENTS -> VLAN 20 on em1 -> v4: 10.10.30.1/24, DHCP 10.10.30.100-199
+```
+
+Servers and Clients can both reach the internet. They can't reach each other yet, on purpose. This closes out pfSense setup. Next is the AD DC VM on the Servers VLAN, then osTicket and Zabbix.
