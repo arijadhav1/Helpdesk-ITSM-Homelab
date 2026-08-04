@@ -1,4 +1,4 @@
-# AD DC VM
+# Active Directory Domain Controller Setup
  
 Now we are going to create our Active Directory VM in our Proxmox environment. This is going to be the domain controller for the whole Meridian Logistics lab, everything else, osTicket, Zabbix, client machines, all authenticates against this box.
  
