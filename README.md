@@ -6,9 +6,9 @@ This is my third homelab. The first two ([AD detection & response](#) and [adver
 
 ## Setup Documentation
 Every phase of this build gets documented as I go, hardware, networking, VM setup, all of it. Full write-ups live in [`/setup`](./setup):
-
-- [Physical Network Setup](./setup/PHYSICAL-SETUP.md) — getting the OptiPlex online through my existing mesh, AT&T gateway troubleshooting
-- [Proxmox + pfSense Setup](./setup/PROXMOX-PFSENSE-SETUP.md) — installing Proxmox, building the pfSense VM, setting up the WAN/LAN split
+- [Physical Network Setup](./setup/01-Physical-Setup.md) — getting the OptiPlex online through my existing mesh, AT&T gateway troubleshooting
+- [Proxmox + pfSense Setup](./setup/02-Proxmox-pfSense-Setup.md) — installing Proxmox, building the pfSense VM, setting up the WAN/LAN split
+- [Active Directory Setup](./setup/03-Active-Directory.md) — building the AD DC VM, promoting to a domain controller, OU structure, groups, and password policy
 
 ## What's in it
 
